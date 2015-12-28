@@ -1,0 +1,5 @@
+<h1>Facilita</h1>
+<% for i in @usuarios %>
+<p><a href="javascript:(function(){elementoJavascript=document.getElementById('onDemandFacilita');if(elementoJavascript!=null){document.getElementsByTagName('head')[0].removeChild(elementoJavascript);};elementoFacilita=document.createElement('script');elementoFacilita.id='onDemandFacilita';elementoFacilita.src='<%= @url_servidor %>facilita/javascript_facilita/?nivel=<%= i %>';elementoFacilita.type='text/javascript';try{document.getElementsByTagName('head')[0].appendChild(elementoFacilita);}catch(e){alert(e);};})()">Facilita <%= i %></a></p>
+<% end %>
+

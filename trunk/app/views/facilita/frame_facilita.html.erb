@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="Aplicação de auxílio a leitura e compreensão de textos, Facilita." />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+<title>FACILITA - Aplicação de auxílio a leitura de textos</title>
+<style type="text/css">
+  body{
+    font-size: 1em;
+    padding: 0 0 0 0;
+    position: fixed;
+    height: 100%;
+    width:100%;
+    overflow: none;
+    background-color: #FFFFFF;
+  }
+  div#corpoRedondo{
+    background-color: #FEFEFE;
+  position: fixed;
+  height: 98%;
+  width:98%;
+  overflow: auto;
+  }
+  p.principal{
+  text-align:justify;
+  margin: 0 2% 0 2%;
+  width: 96%;
+  }
+  div.footer{
+    text-align: center;
+    margin-top: 1%;
+    width:96%;
+    font-size: 0.8em;
+  }
+div.principal{
+    height: 85%;
+    font-family: arial;
+}
+.principalNormal{
+  font-size: 1.2em;
+}
+.principalAumentado{
+  font-size: 1.6em;
+}
+fieldset{
+    border-width: 3px;
+    border-style: solid;
+    border-color: #99DD99;
+    -o-border-radius: 10px;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 10px;
+    -webkit-box-shadow: 0px 3px 7px #adadad;
+    border-radius: 10px;
+    -moz-box-sizing: border-box;
+    -opera-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -khtml-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: center;
+    width:20%;
+    float: right;
+    position: relative;
+    bottom: 30px;
+    margin: 1em 1em 1em 1em;
+}
+fieldset legend{
+  font-size: 1.2em;
+}
+a.iconeTamanho{
+    display: inline;
+}
+img.iconeTamanhoNormal{
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+}
+img.iconeTamanhoAumentada{
+    width: 3em;
+    height: 3em;
+    border: none;
+}
+
+</style>
+<%= stylesheet_link_tag "readability" %>
+<%= stylesheet_link_tag "readability-print" %>
+<%= javascript_include_tag "jquery" %>
+<%= javascript_include_tag "facilita_tools" %>
+<%= javascript_include_tag "readability0.5.0" %>
+<script type="text/javascript">
+  var loading_overlay;
+  var progresso_timeout;
+  function atualizar_progresso(progresso){
+    loading_overlay.set_progress(progresso + "%");
+    progresso_timeout = setTimeout("atualizar_progresso(" + (progresso + 8) + ");", 1000);
+  }
+  function finalizar_progresso(){
+    loading_overlay.set_progress("100%");
+    clearTimeout(progresso_timeout);  
+  }
+  $(document).ready(function(){
+    //var texto = readability.to_text(document.getElementById("dadosFacilita"));
+    try{
+      readability.init();
+    }catch(e){
+      alert(e);  
+    }
+    var texto = $("#readability-content").text();
+    $.ajax({
+      url: "/facilita/teste",
+      async: true,
+      data: {texto: texto},
+      dataType: "text",
+      global: false,
+      type: "POST",
+      beforeSend: function(xhr){
+        loading_overlay = new Loading_overlay();
+        atualizar_progresso(0);
+      },
+      success: function(data, textStatus, xhr){
+        $("#readability-content").html(data);
+        $("h1").html("Terra - Alimentação");
+        finalizar_progresso();
+        loading_overlay.close();
+      }
+    });
+  });
+  // ********************************************************
+</script>
+</head>
+
+<body>
+  <%= @textoSelecionado %>
+</body>
+</html>
+

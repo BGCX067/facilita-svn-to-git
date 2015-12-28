@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="Keywords" content="Aplicação de auxílio a leitura e compreensão de textos, Facilita." />
+<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+<title>FACILITA - Aplicação de auxílio a leitura de textos</title>
+<style type="text/css">
+  body{
+    font-size: 1em;
+    padding: 0 0 0 0;
+    position: fixed;
+    height: 100%;
+    width:100%;
+    overflow: hidden;
+    background-color: #FFFFFF;
+  }
+  div#corpoRedondo{
+    background-color: #FEFEFE;
+    border-bottom: #CCCCCC solid 0.2em;
+    border-left: #CCCCCC solid 0.2em;
+    border-top: #CCCCCC solid 0.1em;
+    border-right: #CCCCCC solid 0.1em;
+    padding: 0.5% 0.5% 0.5% 0.5%;
+    -o-border-radius: 10px;
+  -moz-border-radius: 12px;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: 0px 3px 7px #adadad;
+  -moz-box-shadow: 0px 3px 7px #adadad;
+  border-radius: 10px;
+  -moz-box-sizing: border-box;
+  -opera-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -khtml-box-sizing: border-box;
+  box-sizing: border-box;
+  position: fixed;
+  height: 98%;
+  width:98%;
+  overflow: auto;
+  }
+  div.principal{
+  text-align:justify;
+  margin: 0 auto;
+  max-width: 800px;
+  font-family: 'Times New Roman', Times;
+  line-height: 36px;
+  letter-spacing: normal;
+  }
+  div.footer{
+    text-align: center;
+    margin-top: 1%;
+    width:96%;
+    font-size: 0.8em;
+  }
+div.principal{
+    height: 85%;
+    font-family: arial;
+}
+h1{
+  font-family: Georgia, 'Times New Roman', Times;
+  font-size: 31px;
+  font-weight: bold;
+}
+.principalNormal{
+  font-size: 26px;
+}
+.principalAumentado{
+  font-size: 1.6em;
+}
+fieldset{
+    display: none;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #99DD99;
+    -o-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -webkit-box-shadow: 0px 3px 7px #adadad;
+    -moz-box-shadow: 0px 3px 7px #adadad;
+    box-shadow: 0px 3px 7px #adadad;
+    border-radius: 10px;
+    -moz-box-sizing: border-box;
+    -opera-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -khtml-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-align: center;
+    width:20%;
+    float: right;
+    position: relative;
+    bottom: 30px;
+    margin: 1em 1em 1em 1em;
+}
+fieldset legend{
+  font-size: 1.2em;
+}
+a.iconeTamanho{
+    display: inline;
+}
+img.iconeTamanhoNormal{
+    width: 1.5em;
+    height: 1.5em;
+    border: none;
+}
+img.iconeTamanhoAumentada{
+    width: 3em;
+    height: 3em;
+    border: none;
+}
+
+</style>
+<script type="text/javascript" src="/javascripts/facilita2.js"></script>
+<script type="text/javascript">
+  var funcaoTimeout;
+  var ajaxSucesso = 0;
+  
+  /* geracao via DOM da popup de erro */
+  function gerarDialogWarning(textoDialog, imagem, altImagem){
+      this.imagemErro = document.createElement("img");
+      this.imagemErro.src = imagem;
+      this.imagemErro.style.height = "100px";
+      this.imagemErro.style.width = "100px";
+      this.imagemErro.style.position="relative";
+      this.imagemErro.alt = altImagem;
+      this.imagemErro.style.top = "30%";
+
+        this.paragrafoErro = document.createElement("h2");
+        this.paragrafoErro.style.fontSize = "2em";
+        this.paragrafoErro.style.position="absolute";
+        this.paragrafoErro.style.top = "70%";
+        this.paragrafoErro.style.width = "90%";
+        this.paragrafoErro.style.left = "0";
+        this.paragrafoErro.style.textAlign = "center";
+        this.paragrafoErro.style.fontFamily = "Arial";
+        this.paragrafoErro.style.padding = "0 2em 0 2em";
+        this.paragrafoErro.innerHTML = textoDialog;
+        this.paragrafoErro.style.color = "#AA3300";
+
+        this.divDialogErro = document.createElement("div");
+        this.divDialogErro.style.textAlign="center";
+        this.divDialogErro.style.backgroundColor='#F3F3F3';
+        this.divDialogErro.style.position = "fixed";
+        this.divDialogErro.style.top = "0";
+        this.divDialogErro.style.left = "0";
+        this.divDialogErro.style.height='100%';
+        this.divDialogErro.style.width='100%';
+        this.divDialogErro.id = "erro";
+
+        this.divDialogErro.appendChild(this.imagemErro);
+        this.divDialogErro.appendChild(this.paragrafoErro);
+        dialogErro = new Dialog(this.divDialogErro, " ");
+        setTimeout('dialogErro.abrirDialog();', 1000);
+  }
+  function gerarDialogCarregando(){
+    /* geracao via DOM da popup que apresenta a barra de carregamento */
+    var imagem = document.createElement("img");
+            imagem.src = '/images/loading.gif';
+            imagem.style.height = "100px";
+            imagem.style.width = "100px";
+            imagem.style.position="relative";
+            imagem.alt = "Imagem indicando o carregamento de dados na página.";
+            imagem.style.top = "30%";
+
+            var paragrafo = document.createElement("h2");
+            paragrafo.style.fontSize = "2em";
+            paragrafo.style.position="absolute"; // relative
+            paragrafo.style.top = "70%"; // 40%
+            paragrafo.style.width="90%";
+            paragrafo.style.left="0";
+            paragrafo.style.margin="0 5%";
+            paragrafo.style.textAlign = "center";
+            paragrafo.style.fontFamily = "Arial";
+            paragrafo.innerHTML = "Aguarde...";
+            paragrafo.style.color = "#33AA00";
+            paragrafo.id="mensagemCarregando";
+
+            var divCaixaCarregando = document.createElement("div");
+            divCaixaCarregando.style.backgroundColor='#F7F7F7';
+            divCaixaCarregando.style.position = "absolute";
+            divCaixaCarregando.style.top = "55%";
+            divCaixaCarregando.style.left = "10%";
+            divCaixaCarregando.style.height='1.5em';
+            divCaixaCarregando.style.width='80%';
+            divCaixaCarregando.style.padding="0.5em 0.25em 0.5em 0.25em";
+            divCaixaCarregando.style.border="solid #CCCCCC";
+
+            var divBarraCarregando = document.createElement("div");
+            divBarraCarregando.style.backgroundColor="#66AA00";
+            divBarraCarregando.style.height="1.5em";
+            divBarraCarregando.style.width="0%";
+            divBarraCarregando.id = "barraCarregando";
+
+            divCaixaCarregando.appendChild(divBarraCarregando);
+
+            var divDialogLoading = document.createElement("div");
+            divDialogLoading.style.textAlign="center";
+            divDialogLoading.style.backgroundColor='#F3F3F3';
+            divDialogLoading.style.position = "fixed";
+            divDialogLoading.style.top = "0";
+            divDialogLoading.style.left = "0";
+            divDialogLoading.style.height='100%';
+            divDialogLoading.style.width='100%';
+            divDialogLoading.id = "loading"; 
+
+            divDialogLoading.appendChild(imagem);
+            if(navigator.appName != "Microsoft Internet Explorer")
+              divDialogLoading.appendChild(divCaixaCarregando);
+            divDialogLoading.appendChild(paragrafo);
+            dialogCarregando = new Dialog(divDialogLoading, "");
+            dialogCarregando.divDialog.style.height='100%';
+            dialogCarregando.divDialog.style.width='100%';
+            dialogCarregando.divDialog.style.top='0';
+            dialogCarregando.divDialog.style.left='0';
+            return dialogCarregando;
+  }
+  function erro(){
+      dialogCarregando.fecharDialog();
+      gerarDialogWarning('Problemas na conex&atilde;o! Tente mais tarde.', '/images/disconnect.png', 'Imagem indicando problemas na transmissão de dados na página.');
+  }
+  function atualizarBarra(tempoChamada, tempoTotal){
+    try{
+      document.getElementById('barraCarregando').style.width=Math.round((100*tempoChamada)/tempoTotal) +"%";
+    }catch(e){
+        
+    }
+  }
+
+  function remover_marcacoes(marcacao, base){
+    var elementos_selecionados = base.getElementsByTagName(marcacao);
+    do{ // resolvendo BUG de delecao de elementos da arvore DOM
+      for (var cont_elementos = 0; cont_elementos < elementos_selecionados.length; cont_elementos++){
+        var parent_elemento = elementos_selecionados[cont_elementos].parentNode;
+        var child_elemento = elementos_selecionados[cont_elementos].childNodes;
+        for (var cont_child_elemento = 0; cont_child_elemento < child_elemento.length; cont_child_elemento++){
+          parent_elemento.insertBefore(child_elemento[cont_child_elemento], elementos_selecionados[cont_elementos]);  
+        }
+        parent_elemento.removeChild(elementos_selecionados[cont_elementos]);
+      }
+      elementos_selecionados = base.getElementsByTagName(marcacao);
+    }while(elementos_selecionados.length != 0);
+  }
+
+  window.onload = function(){
+
+    dialogCarregando = gerarDialogCarregando();
+
+    var titulo_pagina = document.getElementsByTagName("h1")[0];
+    titulo_pagina.innerHTML = decodeURIComponent(titulo_pagina.innerHTML);
+
+    /*  TAMANHO DO TEXTO EM PALAVRAS */
+    var tamanhoTexto = document.getElementById('dadosFacilita').innerHTML.split(/%20/).length;
+    //var estimativaTempo = 2*(Math.round(2.5*tamanhoTexto/100)) + 100;
+    //var funcao_timeout = setTimeout("erro()", estimativaTempo*1000);
+
+    /* Parte da requisicao AJAX com o toolkit desenvolvido. */
+    var div_texto = document.getElementById("dadosFacilita");
+    var div_original = document.getElementById("original");
+    div_original.innerHTML = div_original.innerHTML + decodeURIComponent(div_texto.innerHTML);
+    var paragrafos_div = div_original.getElementsByTagName("p");
+    var ul_div = div_original.getElementsByTagName("ul");
+    var ol_div = div_original.getElementsByTagName("ol");
+    var cont_terminados = 0; //incrementado para cada paragrafo terminado de carregar...
+    
+    remover_marcacoes("a", div_original);
+    remover_marcacoes("abbr", div_original);
+    remover_marcacoes("acronym", div_original);
+    remover_marcacoes("address", div_original);
+    remover_marcacoes("applet", div_original);
+    remover_marcacoes("area", div_original);
+    remover_marcacoes("b", div_original);
+    remover_marcacoes("base", div_original);
+    remover_marcacoes("basefont", div_original);
+    remover_marcacoes("bdo", div_original);
+    remover_marcacoes("big", div_original);
+    //remover_marcacoes("blockquote", div_original);
+    remover_marcacoes("body", div_original);
+    remover_marcacoes("br", div_original);
+    remover_marcacoes("button", div_original);
+    //remover_marcacoes("caption", div_original); // TABELAS
+    remover_marcacoes("center", div_original);
+    //remover_marcacoes("cite", div_original);
+    //remover_marcacoes("code", div_original);
+    //remover_marcacoes("col", div_original); // TABELAS
+    
+    //remover_marcacoes("colgroup", div_original); // TABELAS
+    remover_marcacoes("dd", div_original);
+    remover_marcacoes("del", div_original);
+    remover_marcacoes("dfn", div_original);
+    remover_marcacoes("dir", div_original);
+    remover_marcacoes("div", div_original);
+    remover_marcacoes("dl", div_original);
+    remover_marcacoes("dt", div_original);
+    remover_marcacoes("em", div_original);
+    remover_marcacoes("fieldset", div_original);
+    remover_marcacoes("font", div_original);
+    remover_marcacoes("form", div_original);
+    remover_marcacoes("frame", div_original);
+    remover_marcacoes("frameset", div_original);
+    //remover_marcacoes("h1", div_original);
+    //remover_marcacoes("h2", div_original);
+    //remover_marcacoes("h3", div_original);
+    //remover_marcacoes("h4", div_original);
+    //remover_marcacoes("h5", div_original);
+    //remover_marcacoes("h6", div_original);
+
+    remover_marcacoes("head", div_original);
+    remover_marcacoes("hr", div_original);
+    remover_marcacoes("html", div_original);
+    remover_marcacoes("i", div_original);
+    remover_marcacoes("iframe", div_original);
+    //remover_marcacoes("img", div_original);
+    remover_marcacoes("input", div_original);
+    remover_marcacoes("ins", div_original);
+    remover_marcacoes("isindex", div_original);
+    remover_marcacoes("kbd", div_original);
+    remover_marcacoes("label", div_original);
+    remover_marcacoes("legend", div_original);
+    //remover_marcacoes("li", div_original);
+    remover_marcacoes("link", div_original);
+    remover_marcacoes("map", div_original);
+    remover_marcacoes("menu", div_original);
+    remover_marcacoes("meta", div_original);
+    remover_marcacoes("noframes", div_original);
+    remover_marcacoes("noscript", div_original);
+    remover_marcacoes("object", div_original);
+    //remover_marcacoes("ol", div_original);
+    remover_marcacoes("optgroup", div_original);
+    remover_marcacoes("option", div_original);
+    //remover_marcacoes("p", div_original);
+    remover_marcacoes("param", div_original);
+    remover_marcacoes("pre", div_original);
+    remover_marcacoes("q", div_original);
+ 
+    remover_marcacoes("s", div_original);
+    remover_marcacoes("samp", div_original);
+    remover_marcacoes("script", div_original);
+    remover_marcacoes("select", div_original);
+    remover_marcacoes("small", div_original);
+    remover_marcacoes("span", div_original);
+    remover_marcacoes("strike", div_original);
+    remover_marcacoes("strong", div_original);
+    remover_marcacoes("style", div_original);
+    remover_marcacoes("sub", div_original);
+    remover_marcacoes("sup", div_original);
+    //remover_marcacoes("table", div_original); // TABLE
+    //remover_marcacoes("tbody", div_original); // TABLE
+    //remover_marcacoes("td", div_original); // TABLE
+    remover_marcacoes("textarea", div_original);
+    //remover_marcacoes("tfoot", div_original); //TABLE
+    //remover_marcacoes("th", div_original); // TABLE
+    //remover_marcacoes("thead", div_original); // TABLE
+    remover_marcacoes("title", div_original);
+    //remover_marcacoes("tr", div_original); // TABLE
+    remover_marcacoes("tt", div_original);
+    remover_marcacoes("u", div_original);
+    //remover_marcacoes("ul", div_original);
+    remover_marcacoes("var", div_original);
+    remover_marcacoes("xmp", div_original);
+    
+    dialogCarregando.abrirDialog();
+    if(tamanhoTexto > 250){
+        document.getElementById("mensagemCarregando").innerHTML = "Aguarde... Esta requisi&ccedil;&atilde;o pode levar mais de 10 segundos.";
+    }
+
+    for(var cont_paragrafos = 0; cont_paragrafos < paragrafos_div.length; cont_paragrafos++){
+          if(paragrafos_div[cont_paragrafos].getElementsByTagName("img").length == 0){
+           try{
+            var chamada = new Ajax();
+            var tempoInicio;
+            chamada.xmlhttp.novo_p = paragrafos_div[cont_paragrafos];
+            chamada.xmlhttp.count = paragrafos_div.length;
+
+            //document.getElementById('original').appendChild(chamada.xmlhttp.novo_p);
+
+          /* Callbacks da funcao AJAX */
+            chamada.xmlhttp.inicioRequisicao = function(){
+            }
+            chamada.xmlhttp.enviadaRequisicao = function(){
+            }
+            chamada.xmlhttp.carregamentoRequisicao = function(){
+            }
+            chamada.xmlhttp.terminoRequisicao = function(resposta){
+              cont_terminados++;
+              atualizarBarra(cont_terminados, paragrafos_div.length);
+              if(cont_terminados == paragrafos_div.length){
+                dialogCarregando.fecharDialog();
+                //clearTimeout(funcao_timeout);
+              }
+              this.novo_p.innerHTML = resposta;
+            }
+            chamada.xmlhttp.erroRequisicao = function(){
+              erro();
+            }
+            var textoTeste = paragrafos_div[cont_paragrafos].innerHTML;
+            paragrafos_div[cont_paragrafos].innerHTML = "<img src='/images/carregando.gif' alt='carregando' /> Aguarde alguns segundos...";
+            chamada.doPost("/facilita/<%= @nivel_usuario %>", ("texto=" + textoTeste), false);
+            //dialogCarregando.fecharDialog();
+            //chamada.xmlhttp.novo_p.innerHTML = textoTeste;
+           }catch(e){
+             alert(e);
+           }
+        }else{
+          cont_terminados++;  
+        }
+    } //for
+    document.getElementById('tamanhoNormal').onclick = function(){
+      try{
+        document.getElementById('original').className = "principal principalNormal";
+      }catch(exsd){
+        alert(exsd);
+      }
+    };
+    document.getElementById('tamanhoAumentado').onclick = function(){
+      document.getElementById('original').className = "principal principalAumentado";
+    };
+            
+       // ********************************************************
+  }
+</script>
+</head>
+
+<body>
+    <div class="sombra">
+    <div id="corpoRedondo">
+
+	<p><%= flash[:notice] %></p>
+
+<div class="principal">
+<div class="header2">
+    <fieldset title="Tamanho fonte:">
+      <legend>Tamanho fonte:</legend>
+      <a href="#" class="iconeTamanho" id="tamanhoNormal">
+        <%= image_tag("text.png", :alt => "fonte tamanho Normal", :class => 'iconeTamanhoNormal') %>
+      </a>
+      <a href="#" class="iconeTamanho" id="tamanhoAumentado">
+        <%= image_tag("text.png", :alt => "fonte tamanho Normal", :class => 'iconeTamanhoAumentada') %>
+      </a>
+   </fieldset>
+</div>
+<div id="original" name="original" class="principal principalNormal">
+  <h1><%= @titulo_pagina %></h1>
+</div>
+<div id="dadosFacilita" style="display:none"><%=@textoSelecionado%></div>
+</div>
+    </div>
+    </div>
+</body>
+</html>
